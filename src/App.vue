@@ -1,107 +1,52 @@
 <template>
-  <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
-  <Suspense>
-    <template #default>
-      <async-show></async-show>
-      <dog-show></dog-show>
-    </template>
-    <template #fallback><h1>Loading...</h1></template>
-  </Suspense>
-  <button @click="openModal">Open Modal</button>
-  <Modal :isOpen="modalIsOpen" @close-modal="closeModal">My Modal</Modal>
-  <!-- <HelloWorld msg="Hello " /> -->
-  <Demo style="fontSize:20px"></Demo>
-  <p>{{ count }}</p>
-  <p>{{ double }}</p>
-  <ul>
-    <li v-for="number in numbers" :key="number">{{ number }}</li>
-  </ul>
-  <h3>{{ person.name }}</h3>
-  <button @click="increase">Click Add 1</button>
-  <button @click="updateGreeting">update title</button>
+  <div class="container">
+    <column-item :list="list"></column-item>
+  </div>
 </template>
 
 <script lang="ts">
+import "bootstrap/dist/css/bootstrap.min.css";
+
 // 使用composition API: 相关的feature组合在一起；比minix可以更高效的重用模块；
-import {
-  ref,
-  computed,
-  reactive,
-  toRefs,
-  onMounted,
-  onUpdated,
-  onRenderTriggered,
-  watch,
-} from "vue";
-// import HelloWorld from "./components/HelloWorld.vue";
-import Demo from "./components/demo.vue";
-import Modal from "./components/modal.vue";
-import AsyncShow from "./components/async-show.vue";
-import DogShow from "./components/dog-show.vue";
-interface DataProps {
-  count: number;
-  double: number;
-  increase: () => void;
-  numbers: number[];
-  person: { name?: string };
-}
-export default {
+import { defineComponent } from "vue";
+import columnItem, { ColumnItemProps } from "./components/column-item.vue";
+const testData: ColumnItemProps[] = [
+  {
+    id: 1,
+    title: "test的专栏1",
+    description: "这是test1的专栏，有一段非常有意思的简介，可以更新一下欧",
+    avatar: "https://images.dog.ceo/breeds/mountain-swiss/n02107574_2335.jpg",
+  },
+  {
+    id: 1,
+    title: "test的专栏2",
+    description: "这是test2的专栏，有一段非常有意思的简介，可以更新一下欧",
+    avatar: "https://images.dog.ceo/breeds/mountain-swiss/n02107574_2335.jpg",
+  },
+  {
+    id: 1,
+    title: "test的专栏3",
+    description: "这是test3的专栏，有一段非常有意思的简介，可以更新一下欧",
+    avatar: "https://images.dog.ceo/breeds/mountain-swiss/n02107574_2335.jpg",
+  },
+  {
+    id: 1,
+    title: "test的专栏4",
+    description: "这是test4的专栏，有一段非常有意思的简介，可以更新一下欧",
+    avatar: "https://images.dog.ceo/breeds/mountain-swiss/n02107574_2335.jpg",
+  },
+];
+export default defineComponent({
   name: "App",
   components: {
-    DogShow,
-    AsyncShow,
-    Modal,
-    // HelloWorld,
-    Demo,
+    columnItem,
   },
   setup() {
-    onMounted(() => {
-      // console.log("mounted");
-    });
-    onUpdated(() => {
-      // console.log("updated");
-    });
-    onRenderTriggered((event) => {
-      // console.log(event);
-    });
-
-    const data: DataProps = reactive({
-      count: 1,
-      double: computed(() => data.count * 2),
-      increase: () => {
-        data.count++;
-      },
-      numbers: [0, 1, 2],
-      person: {},
-    });
-    data.numbers[0] = 6;
-    data.person.name = "lemon";
-    const greetings = ref("");
-    const updateGreeting = () => {
-      greetings.value += "hello! ";
-    };
-    watch([greetings, () => data.count], (newVal, oldVal) => {
-      document.title = "updated " + greetings.value + data.count;
-    });
-    const refData = toRefs(data); // 响应性
-    // teleport modal
-    const modalIsOpen = ref(false);
-    const openModal = () => {
-      modalIsOpen.value = true;
-    };
-    const closeModal = () => {
-      modalIsOpen.value = false;
-    };
     return {
-      ...refData,
-      greetings,
-      updateGreeting,
-      modalIsOpen,
-      openModal,
-      closeModal,
+      list: testData,
     };
   },
-};
+});
 </script>
 
 <style lang="less">

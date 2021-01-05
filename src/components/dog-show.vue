@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img width="200" :src="result && result.message" />
+    <img width="200" :src="res && res.message" />
   </div>
 </template>
 <script lang="ts">
@@ -10,7 +10,7 @@ export default defineComponent({
   async setup() {
     const rawData = await axios.get("https://dog.ceo/api/breeds/image/random");
 
-    return { result: rawData.data };
+    return { res: rawData.data };
   },
 });
 </script>
