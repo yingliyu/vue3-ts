@@ -2,7 +2,7 @@
   <div class="row">
     <div v-for="item in columnList" :key="item.id" class="col-4 mb-3">
       <div class="card h-100 shadow">
-        <div class="card-body">
+        <div class="card-body text-center">
           <img
             width="60"
             height="60"

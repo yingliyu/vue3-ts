@@ -1,0 +1,94 @@
+<template>
+  <div class="validate-input-wrapper">
+    <label for="exampleInputEmail1" class="form-label">{{ label }}</label>
+    <input
+      class="form-control"
+      :class="{ 'is-invalid': inputRef.error }"
+      id="exampleInputEmail1"
+      aria-describedby="emailHelp"
+      :value="inputRef.val"
+      @blur="validateHandle"
+      @input="updateVal"
+      v-bind="$attrs"
+    />
+    <div class="invalid-feedback">
+      {{ inputRef.message }}
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import {
+  defineComponent,
+  onMounted,
+  PropType,
+  reactive,
+  toRefs,
+  ref,
+} from "vue";
+import { emitter } from "./validate-form.vue";
+const emailReg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+interface RuleEmailProps {
+  type: "required" | "email";
+  message: string;
+}
+export type RuleEmailType = RuleEmailProps[];
+export default defineComponent({
+  name: "validate-input",
+  props: {
+    label: String,
+    rules: Array as PropType<RuleEmailType>,
+    modelValue: String,
+  },
+  components: {},
+  // props are reactive
+  setup(props, context) {
+    const str = ref("lemon");
+    console.log(str);
+    const obj = reactive({ name: "lemon", age: 20 });
+    console.log(obj);
+    // const { modelValue } = toRefs(props);
+    // console.log("modelValue***", modelValue?.value);
+    // console.log("modelValue=======", props.modelValue);
+    // console.log("rules=", props.rules);
+
+    const inputRef = reactive({
+      val: props.modelValue || "",
+      error: false,
+      message: "",
+    });
+    const updateVal = (e: KeyboardEvent) => {
+      const targetValue = (e.target as HTMLInputElement).value;
+      inputRef.val = targetValue;
+      context.emit("update:modelValue", targetValue);
+    };
+    const validateHandle = () => {
+      if (props.rules) {
+        const allPassed = props.rules.every((rule) => {
+          let passed = true;
+          inputRef.message = rule.message;
+          switch (rule.type) {
+            case "required":
+              passed = !(inputRef.val.trim() === "");
+              break;
+            case "email":
+              passed = emailReg.test(inputRef.val);
+              break;
+            default:
+              break;
+          }
+          return passed;
+        });
+        inputRef.error = !allPassed;
+        return allPassed;
+      }
+      return true;
+    };
+    onMounted(() => {
+      // 给监听器发送信号
+      emitter.emit("form-item-created", validateHandle);
+    });
+    return { inputRef, validateHandle, updateVal };
+  },
+});
+</script>
+<style scoped></style>

@@ -12,26 +12,25 @@
         </li>
       </ul>
       <div v-else class="dropdown">
-        <button
-          class="btn dropdown-toggle  btn-outline-light"
-          type="button"
-          id="dropdownMenuButton"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          Hello,{{ user.name }}
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <li><a class="dropdown-item" href="#">用户中心</a></li>
-          <li><a class="dropdown-item" href="#">退出</a></li>
-        </ul>
+        <dropdown :title="`Hello,${user.name}`">
+          <dropdown-item
+            ><a class="dropdown-item" href="#">新建文章</a></dropdown-item
+          >
+          <dropdown-item disabled
+            ><a class="dropdown-item" href="#">编辑资料</a></dropdown-item
+          >
+          <dropdown-item
+            ><a class="dropdown-item" href="#">退出</a></dropdown-item
+          >
+        </dropdown>
       </div>
     </div>
   </nav>
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-
+import Dropdown from "./dropdown.vue";
+import DropdownItem from "./dropdown-item.vue";
 export interface UserProps {
   isLogin: boolean;
   name?: string;
@@ -45,9 +44,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    return {};
-  },
+  components: { Dropdown, DropdownItem },
 });
 </script>
 <style lang="less" scoped></style>
