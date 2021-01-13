@@ -2,13 +2,17 @@
   <!-- As a link -->
   <nav class="navbar navbar-dark bg-primary fixed-top px-3">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">者也专栏</a>
+      <router-link to="/" class="navbar-brand" href="#">者也专栏</router-link>
       <ul v-if="!user.isLogin" class="list-inline mb-0">
         <li class="list-inline-item">
-          <a href="#" class="pe-2 text-white text-decoration-none">登陆</a>
+          <router-link to="/login" class="pe-2 text-white text-decoration-none"
+            >登陆</router-link
+          >
         </li>
         <li class="list-inline-item">
-          <a href="#" class="text-white text-decoration-none">注册</a>
+          <router-link to="/login" class="text-white text-decoration-none"
+            >注册</router-link
+          >
         </li>
       </ul>
       <div v-else class="dropdown">

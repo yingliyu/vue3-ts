@@ -17,14 +17,7 @@
   </div>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  onMounted,
-  PropType,
-  reactive,
-  toRefs,
-  ref,
-} from "vue";
+import { defineComponent, onMounted, PropType, reactive, ref } from "vue";
 import { emitter } from "./validate-form.vue";
 const emailReg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
 interface RuleEmailProps {
@@ -42,15 +35,6 @@ export default defineComponent({
   components: {},
   // props are reactive
   setup(props, context) {
-    const str = ref("lemon");
-    console.log(str);
-    const obj = reactive({ name: "lemon", age: 20 });
-    console.log(obj);
-    // const { modelValue } = toRefs(props);
-    // console.log("modelValue***", modelValue?.value);
-    // console.log("modelValue=======", props.modelValue);
-    // console.log("rules=", props.rules);
-
     const inputRef = reactive({
       val: props.modelValue || "",
       error: false,
