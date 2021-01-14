@@ -8,13 +8,14 @@
 
 <script lang="ts">
 import "bootstrap/dist/css/bootstrap.min.css";
-// import axios from "axios";
-// 使用composition API: 相关的feature组合在一起；比minix可以更高效的重用模块；
-import { computed, defineComponent, reactive } from "vue";
-import GlobalHeader from "./components/global-header.vue";
+import { defineComponent } from "vue";
+import GlobalHeader, { UserProps } from "./components/global-header.vue";
 import FooterItem from "./components/footer/index.vue";
-import { useStore } from "vuex";
 
+interface LoginProps {
+  name: string;
+  password: string;
+}
 export default defineComponent({
   name: "App",
   components: {
@@ -22,14 +23,13 @@ export default defineComponent({
     FooterItem,
   },
   setup() {
-    const loginData: LoginProps = reactive({
-      name: "",
-      password: "",
-    });
-    const store = useStore();
-    const userInfo = computed(() => store.state.user);
+    const userInfo: UserProps = {
+      id: 1,
+      name: "lemon",
+      isLogin: false,
+    };
+
     return {
-      ...loginData,
       userInfo,
     };
   },

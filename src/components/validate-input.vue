@@ -5,19 +5,29 @@
       class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
       id="exampleInputEmail1"
+      v-if="tag !== 'textarea'"
       aria-describedby="emailHelp"
       :value="inputRef.val"
       @blur="validateHandle"
       @input="updateVal"
       v-bind="$attrs"
     />
+    <textarea
+      v-else
+      class="form-control"
+      :class="{ 'is-invalid': inputRef.error }"
+      :value="inputRef.val"
+      @blur="validateHandle"
+      @input="updateVal"
+      v-bind="$attrs"
+    ></textarea>
     <div class="invalid-feedback">
       {{ inputRef.message }}
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, PropType, reactive, ref } from "vue";
+import { defineComponent, onMounted, PropType, reactive } from "vue";
 import { emitter } from "./validate-form.vue";
 const emailReg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
 interface RuleEmailProps {
@@ -25,12 +35,17 @@ interface RuleEmailProps {
   message: string;
 }
 export type RuleEmailType = RuleEmailProps[];
+export type TagType = "input" | "textarea";
 export default defineComponent({
   name: "validate-input",
   props: {
     label: String,
     rules: Array as PropType<RuleEmailType>,
     modelValue: String,
+    tag: {
+      type: String as PropType<TagType>,
+      default: "input",
+    },
   },
   components: {},
   // props are reactive

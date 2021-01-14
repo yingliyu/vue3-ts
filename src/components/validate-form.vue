@@ -1,7 +1,7 @@
 <template>
   <form class="validate-form-wrapper">
     <slot name="default"></slot>
-    <div class="submit-area" @click.prevent="submitForm">
+    <div class="submit-area pb-3" @click.prevent="submitForm">
       <slot name="submit">
         <button type="submit" class="btn btn-primary">
           提交
