@@ -1,6 +1,5 @@
 <template>
   <div class="column-detail-wrapper pt-3">
-    <!-- <pre>{{ postList }}</pre> -->
     <div class="row py-3 border-bottom justify-content-center">
       <div class="col-md-2">
         <img :src="columnDetail.avatar" />
@@ -14,27 +13,27 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from "vue";
-import { useRoute } from "vue-router";
-import { useStore } from "vuex";
-import Post from "../../components/post-list/index.vue";
-import { GlobalDataProps } from "@/stores/state";
+import { computed, defineComponent, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
+import Post from '../../components/post-list/index.vue';
+import { GlobalDataProps } from '@/stores/state';
 export default defineComponent({
-  name: "index",
+  name: 'index',
   props: {},
   components: { Post },
   setup() {
-    const store = useStore<GlobalDataProps>();
     const route = useRoute();
-    const currentColumnId: string = route.params.id.toString();
-    const columnDetail = computed(() =>
-      store.getters.getColumnById(currentColumnId)
-    );
-    const postList = computed(() =>
-      store.getters.getPostsByCid(currentColumnId)
-    );
+    const currentColumnId = route.params.id;
+    const { dispatch, getters, state } = useStore<GlobalDataProps>();
+    onMounted(() => {
+      dispatch('getColumnByIdAction', currentColumnId);
+      dispatch('getPostsByCidAction', currentColumnId);
+    });
+    const columnDetail = computed(() => getters.getColumnById(currentColumnId));
+    const postList = computed(() => state.posts);
     return { route, columnDetail, postList };
-  },
+  }
 });
 </script>
 <style scoped lang="less">

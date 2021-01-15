@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <loading v-if="isLoading" text="努力加载中..." background="rgba(0,0,0,0.7)"></loading>
     <global-header :user="userInfo" />
     <router-view></router-view>
   </div>
@@ -7,32 +8,41 @@
 </template>
 
 <script lang="ts">
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 // import axios from "axios";
 // 使用composition API: 相关的feature组合在一起；比minix可以更高效的重用模块；
-import { computed, defineComponent, reactive } from "vue";
-import GlobalHeader from "./components/global-header.vue";
-import FooterItem from "./components/footer/index.vue";
-import { useStore } from "vuex";
-
+import { computed, defineComponent, onMounted, reactive } from 'vue';
+import GlobalHeader from './components/global-header.vue';
+import FooterItem from './components/footer/index.vue';
+import { useStore } from 'vuex';
+import Loading from './components/loading/index.vue';
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: {
     GlobalHeader,
     FooterItem,
+    Loading
   },
   setup() {
-    const loginData: LoginProps = reactive({
-      name: "",
-      password: "",
+    const { dispatch, state } = useStore();
+    onMounted(() => {
+      if (state.token && !state.user.isLogin) {
+        dispatch('getUserInfo');
+      }
     });
-    const store = useStore();
-    const userInfo = computed(() => store.state.user);
+    const loginData: LoginProps = reactive({
+      name: '',
+      password: ''
+    });
+    const userInfo = computed(() => state.user);
+    const isLoading = computed(() => state.loading);
+
     return {
       ...loginData,
       userInfo,
+      isLoading
     };
-  },
+  }
 });
 </script>
 

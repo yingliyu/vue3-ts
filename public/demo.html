@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      button {
+        padding: 10px 15px;
+        border-radius: 5px;
+        background-color: #409eff;
+        border-color: transparent;
+        color: #fff;
+        font-size: 16px;
+      }
+      .examples-wrapper {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background-color: #fff;
+        padding: 15px;
+        transform: translate(-50%, -50%);
+      }
+      .examples-wrapper button {
+        margin: 5px;
+      }
+      .example-footer {
+        float: right;
+      }
+    </style>
+  </head>
+
+  <body>
+    <button id="examples">示例</button>
+    <div class="examples-wrapper" id="exampleModal">
+      <section>
+        <button type="button"><span>Qiang Yang</span></button
+        ><button type="button"><span>Vincent Vanhoucke</span></button
+        ><button type="button"><span>Christian Szegedy</span></button
+        ><button type="button"><span>Sergey Ioffe</span></button
+        ><button type="button"><span>Feiping Nie</span></button
+        ><button type="button"><span>Maosong Sun</span></button
+        ><button type="button"><span>Zhihua Zhou</span></button
+        ><button type="button"><span>Zhiyuan Liu</span></button
+        ><button type="button"><span>Sinno Jialin Pan</span></button
+        ><button type="button"><span>Heng Huang</span></button
+        ><button type="button"><span>Tom Mitchell</span></button
+        ><button type="button"><span>David Silver</span></button
+        ><button type="button"><span>Justin Betteridge</span></button
+        ><button type="button"><span>Milind Tambe</span></button
+        ><button type="button"><span>Ilya Sutskever</span></button
+        ><button type="button"><span>Yoshua Bengio</span></button
+        ><button type="button"><span>Alex Krizhevsky</span></button>
+      </section>
+      <div class="example-footer">
+        <!-- <button type="button" class="ant-btn ant-btn-primary"><span>换一组</span></button> -->
+        <button id="close-btn" type="button"><span>关 闭</span></button>
+      </div>
+    </div>
+  </body>
+  <script>
+    const exampleBtn = document.getElementById('examples');
+    const exampleModal = document.getElementById('exampleModal');
+
+    exampleBtn.onclick = () => {
+      exampleModal.style.display = 'block';
+    };
+    const closeBtn = document.getElementById('close-btn');
+    closeBtn.onclick = () => {
+      exampleModal.style.display = 'none';
+    };
+  </script>
+</html>

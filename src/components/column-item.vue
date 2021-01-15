@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-for="item in columnList" :key="item.id" class="col-4 mb-3">
+    <div v-for="(item, index) in columnList" :key="`${item.id}_${index}`" class="col-4 mb-3">
       <div class="card h-100 shadow">
         <div class="card-body text-center">
           <img
@@ -11,9 +11,7 @@
           />
           <h5 class="card-title">{{ item.title }}</h5>
           <p class="card-text text-start">{{ item.description }}</p>
-          <router-link
-            :to="`/column/${item.id}`"
-            class="btn btn-outline-primary"
+          <router-link :to="`/column/${item.id}`" class="btn btn-outline-primary"
             >进入专栏</router-link
           >
         </div>
@@ -22,28 +20,26 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
-import { ColumnProps } from "../utils/testData";
+import { computed, defineComponent, PropType } from 'vue';
+import { ColumnProps } from '../utils/testData';
 export default defineComponent({
-  name: "ColumnItem",
+  name: 'ColumnItem',
   props: {
     list: {
       type: Array as PropType<ColumnProps[]>,
-      required: true,
-    },
+      required: true
+    }
   },
   setup(props) {
     const columnList = computed(() => {
       return props.list.map((column) => {
-        column.avatar = !column.avatar
-          ? require("@/assets/dog1.png")
-          : column.avatar;
+        column.avatar = !column.avatar ? require('@/assets/dog1.png') : column.avatar;
         return column;
       });
     });
-    console.log(props.list[0].title);
+
     return { columnList };
-  },
+  }
 });
 </script>
 <style lang="less" scoped></style>

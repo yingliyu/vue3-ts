@@ -27,46 +27,45 @@
   </div>
 </template>
 <script lang="ts">
-import { GlobalDataProps } from "@/stores/state";
-import { PostProps } from "@/utils/testData";
-import { defineComponent, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-import ValidateForm from "../../components/validate-form.vue";
-import ValidateInput from "../../components/validate-input.vue";
+import { GlobalDataProps } from '@/stores/state';
+import { PostProps } from '@/utils/testData';
+import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import ValidateForm from '../../components/validate-form.vue';
+import ValidateInput from '../../components/validate-input.vue';
 export default defineComponent({
-  name: "index",
+  name: 'index',
   props: {},
   components: { ValidateForm, ValidateInput },
   setup() {
     const store = useStore<GlobalDataProps>();
     const router = useRouter();
-    const title = ref("我的文章标题呀");
-    const content = ref("我的文章内容有很多很多很多...");
-    const titleRules = [{ type: "required", message: "文章标题不能为空" }];
-    const postRules = [{ type: "required", message: "文章内容不能为空" }];
+    const title = ref('我的文章标题呀');
+    const content = ref('我的文章内容有很多很多很多...');
+    const titleRules = [{ type: 'required', message: '文章标题不能为空' }];
+    const postRules = [{ type: 'required', message: '文章内容不能为空' }];
     const onFormSubmit = (result: boolean) => {
       if (result) {
         const { columnId } = store.state.user;
-        console.log(columnId);
         if (columnId) {
           const newPost: PostProps = {
             id: new Date().getTime().toString(),
             title: title.value,
             content: content.value,
-            columnId,
-            createdTime: new Date().toLocaleString(),
+            cid: columnId,
+            createdTime: new Date().toLocaleString()
           };
-          store.commit("createPost", newPost);
+          store.commit('createPost', newPost);
           router.push({
-            name: "column",
-            params: { id: columnId },
+            name: 'column',
+            params: { id: columnId }
           });
         }
       }
     };
     return { titleRules, postRules, title, content, onFormSubmit };
-  },
+  }
 });
 </script>
 <style scoped lang="less"></style>

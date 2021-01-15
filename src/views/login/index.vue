@@ -8,7 +8,7 @@
           type="email"
           label="用户名/邮箱"
           placeholder="请输入用户名/邮箱"
-          :modelValue="emailRef2"
+          :modelValue="emailRef.value"
           :rules="emailRules"
         ></validate-input>
       </div>
@@ -40,7 +40,6 @@
 import { defineComponent, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-
 import ValidateInput, { RuleEmailType } from '../../components/validate-input.vue';
 import ValidateForm from '../../components/validate-form.vue';
 interface LoginProps {
@@ -57,7 +56,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
-    const emailRef2 = ref('lemon@123.com');
+    const emailRef2 = ref('');
+    const passwordVal = ref('');
+
     const emailRules: RuleEmailType = [
       {
         type: 'required',
@@ -68,23 +69,27 @@ export default defineComponent({
         message: ' 请输入正确的电子邮箱格式'
       }
     ];
-    const passwordVal = ref('123');
     const passwordRules = [{ type: 'required', message: '密码不能为空' }];
 
     const emailRef = reactive({
-      val: '',
+      value: '',
       error: false,
       message: ''
     });
 
     const onFormSubmit = (result: boolean) => {
-      emailRef2.value = '';
-      passwordVal.value = '';
-      console.log('result===', result);
+      const payload = {
+        email: emailRef.value,
+        password: passwordVal.value
+      };
       if (result) {
-        router.push('/');
-        store.commit('login');
+        console.log(emailRef.value, passwordVal);
+
+        // store.dispatch('loginAndFetch', payload);
+        // router.push('/');
       }
+      // emailRef2.value = '';
+      // passwordVal.value = '';
     };
     return {
       passwordVal,
