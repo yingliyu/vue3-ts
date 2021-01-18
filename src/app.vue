@@ -11,11 +11,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import axios from "axios";
 // 使用composition API: 相关的feature组合在一起；比minix可以更高效的重用模块；
-import { computed, defineComponent, onMounted, reactive } from 'vue';
+import { computed, defineComponent, onMounted, reactive, watch, ref } from 'vue';
 import GlobalHeader from './components/global-header.vue';
 import FooterItem from './components/footer/index.vue';
 import { useStore } from 'vuex';
 import Loading from './components/loading/index.vue';
+import createMessage from './components/create-message/index';
 export default defineComponent({
   name: 'App',
   components: {
@@ -30,17 +31,29 @@ export default defineComponent({
         dispatch('getUserInfo');
       }
     });
-    const loginData: LoginProps = reactive({
+    const loginData = reactive({
       name: '',
       password: ''
     });
     const userInfo = computed(() => state.user);
     const isLoading = computed(() => state.loading);
-
+    const error = computed(() => state.error);
+    const showErrorMsg = ref(false);
+    watch(
+      () => error.value.code,
+      () => {
+        const { code, message } = error.value;
+        if (code !== 200 && message) {
+          createMessage(message, 'error');
+        }
+      }
+    );
     return {
       ...loginData,
       userInfo,
-      isLoading
+      isLoading,
+      error,
+      showErrorMsg
     };
   }
 });

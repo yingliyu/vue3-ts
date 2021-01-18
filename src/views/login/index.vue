@@ -8,7 +8,7 @@
           type="email"
           label="用户名/邮箱"
           placeholder="请输入用户名/邮箱"
-          :modelValue="emailRef.value"
+          v-model="emailRef"
           :rules="emailRules"
         ></validate-input>
       </div>
@@ -17,7 +17,7 @@
           type="password"
           label="密码"
           placeholder="请输入密码"
-          :modelValue="passwordVal"
+          v-model="passwordVal"
           :rules="passwordRules"
         ></validate-input>
       </div>
@@ -37,17 +37,18 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import ValidateInput, { RuleEmailType } from '../../components/validate-input.vue';
 import ValidateForm from '../../components/validate-form.vue';
+import createMessage from '../../components/create-message/index';
 interface LoginProps {
   name: string;
   password: string;
 }
 export default defineComponent({
-  name: 'index',
+  name: 'Login',
   props: {},
   components: {
     ValidateForm,
@@ -56,7 +57,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
-    const emailRef2 = ref('');
+    const emailRef = ref('');
     const passwordVal = ref('');
 
     const emailRules: RuleEmailType = [
@@ -71,32 +72,31 @@ export default defineComponent({
     ];
     const passwordRules = [{ type: 'required', message: '密码不能为空' }];
 
-    const emailRef = reactive({
-      value: '',
-      error: false,
-      message: ''
-    });
-
     const onFormSubmit = (result: boolean) => {
       const payload = {
         email: emailRef.value,
         password: passwordVal.value
       };
       if (result) {
-        console.log(emailRef.value, passwordVal);
-
-        // store.dispatch('loginAndFetch', payload);
-        // router.push('/');
+        store
+          .dispatch('loginAndFetch', payload)
+          .then((data) => {
+            console.log(data);
+            createMessage('登陆成功 2s后跳转到首页', 'success');
+            setTimeout(() => {
+              router.push('/');
+            }, 2000);
+          })
+          .catch((e) => {
+            console.log('login error===', e);
+          });
       }
-      // emailRef2.value = '';
-      // passwordVal.value = '';
     };
     return {
       passwordVal,
       passwordRules,
       emailRules,
       emailRef,
-      emailRef2,
       onFormSubmit
     };
   }

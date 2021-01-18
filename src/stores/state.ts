@@ -6,8 +6,14 @@ export interface UserProps {
   name?: string;
   id?: string;
   columnId?: string;
+  email?: string;
+}
+export interface GlobalErrorProps {
+  code: number;
+  message?: string;
 }
 export interface GlobalDataProps {
+  error: GlobalErrorProps;
   token: string;
   loading: boolean;
   user: UserProps;
@@ -24,9 +30,13 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
 
 const store = createStore<GlobalDataProps>({
   state: {
+    error: {
+      code: 200,
+      message: ''
+    },
     token: localStorage.getItem('token') || '',
     loading: false,
-    user: { isLogin: false, name: 'lemon', columnId: 'CID1' },
+    user: { isLogin: false },
     columns: [],
     posts: []
   },
@@ -46,6 +56,9 @@ const store = createStore<GlobalDataProps>({
     },
     setLoading(state, status) {
       state.loading = status;
+    },
+    setError(state, e: GlobalErrorProps) {
+      state.error = e;
     },
     login(state, rawData) {
       const { token } = rawData.data;

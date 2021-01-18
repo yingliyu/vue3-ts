@@ -26,7 +26,7 @@
   </nav>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, onMounted, PropType } from 'vue';
 import Dropdown from './dropdown.vue';
 import DropdownItem from './dropdown-item.vue';
 import { UserProps } from '../stores/state';
@@ -39,7 +39,12 @@ export default defineComponent({
       required: true
     }
   },
-  components: { Dropdown, DropdownItem }
+  components: { Dropdown, DropdownItem },
+  setup(props) {
+    onMounted(() => {
+      console.log(props.user.name);
+    });
+  }
 });
 </script>
 <style lang="less" scoped></style>

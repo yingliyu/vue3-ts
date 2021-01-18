@@ -29,13 +29,22 @@ axios.defaults.baseURL = 'http://rap2api.taobao.org/app/mock/274855';
 // console.log(test());
 axios.interceptors.request.use((config) => {
   store.commit('setLoading', true);
+  store.commit('setError', { code: 200, message: '' });
   return config;
 });
 
-axios.interceptors.response.use((config) => {
-  store.commit('setLoading', false);
-  return config;
-});
+axios.interceptors.response.use(
+  (config) => {
+    store.commit('setLoading', false);
+    return config;
+  },
+  (e) => {
+    const { type } = new Event(e);
+    store.commit('setError', { code: 404, message: type });
+    store.commit('setLoading', false);
+    return Promise.reject(type);
+  }
+);
 
 app.use(router);
 app.use(store);
