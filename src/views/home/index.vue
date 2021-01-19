@@ -12,10 +12,9 @@
 import { defineComponent, computed, onMounted } from 'vue';
 import columnItem from '../../components/column-item.vue';
 import { useStore } from 'vuex';
-import { GlobalDataProps } from '@/stores/state';
+import { GlobalDataProps } from '../../stores/state';
 export default defineComponent({
   name: 'Home',
-  props: {},
   components: { columnItem },
   setup() {
     // 全局类型会有自动补全功能
@@ -24,8 +23,11 @@ export default defineComponent({
       store.dispatch('getColumnsAction');
     });
     // 状态储存是响应式，从store实例读取状态最简单的方法是在计算属性中返回某个状态
-    const list = computed(() => store.state.columns);
+    const list = computed(() => store.getters.getColumns);
+    // console.log('list: ', list);
+
     const biggerColumnLen = computed(() => store.getters.biggerColumnLen);
+
     return {
       biggerColumnLen,
       list

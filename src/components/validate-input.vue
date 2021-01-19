@@ -27,38 +27,38 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, PropType, reactive } from "vue";
-import { emitter } from "./validate-form.vue";
+import { defineComponent, onMounted, PropType, reactive } from 'vue';
+import { emitter } from './validate-form.vue';
 const emailReg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
 interface RuleEmailProps {
-  type: "required" | "email";
+  type: 'required' | 'email' | 'custom';
   message: string;
+  validator?: () => boolean;
 }
 export type RuleEmailType = RuleEmailProps[];
-export type TagType = "input" | "textarea";
+export type TagType = 'input' | 'textarea';
 export default defineComponent({
-  name: "validate-input",
+  name: 'validate-input',
   props: {
     label: String,
     rules: Array as PropType<RuleEmailType>,
     modelValue: String,
     tag: {
       type: String as PropType<TagType>,
-      default: "input",
-    },
+      default: 'input'
+    }
   },
-  components: {},
   // props are reactive
   setup(props, context) {
     const inputRef = reactive({
-      val: props.modelValue || "",
+      val: props.modelValue || '',
       error: false,
-      message: "",
+      message: ''
     });
     const updateVal = (e: KeyboardEvent) => {
       const targetValue = (e.target as HTMLInputElement).value;
       inputRef.val = targetValue;
-      context.emit("update:modelValue", targetValue);
+      context.emit('update:modelValue', targetValue);
     };
     const validateHandle = () => {
       if (props.rules) {
@@ -66,11 +66,14 @@ export default defineComponent({
           let passed = true;
           inputRef.message = rule.message;
           switch (rule.type) {
-            case "required":
-              passed = !(inputRef.val.trim() === "");
+            case 'required':
+              passed = !(inputRef.val.trim() === '');
               break;
-            case "email":
+            case 'email':
               passed = emailReg.test(inputRef.val);
+              break;
+            case 'custom':
+              passed = rule.validator ? rule.validator() : true;
               break;
             default:
               break;
@@ -84,10 +87,10 @@ export default defineComponent({
     };
     onMounted(() => {
       // 给监听器发送信号
-      emitter.emit("form-item-created", validateHandle);
+      emitter.emit('form-item-created', validateHandle);
     });
     return { inputRef, validateHandle, updateVal };
-  },
+  }
 });
 </script>
 <style scoped></style>

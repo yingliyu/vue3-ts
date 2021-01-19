@@ -25,12 +25,8 @@ export default defineComponent({
     Loading
   },
   setup() {
-    const { dispatch, state } = useStore();
-    onMounted(() => {
-      if (state.token && !state.user.isLogin) {
-        dispatch('getUserInfo');
-      }
-    });
+    const { state } = useStore();
+
     const loginData = reactive({
       name: '',
       password: ''

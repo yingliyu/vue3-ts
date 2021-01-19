@@ -6,7 +6,7 @@
           <img
             width="60"
             height="60"
-            :src="item.avatar"
+            :src="item.avatar && item.avatar.url"
             class="rounded-circle border border-light my-3"
           />
           <h5 class="card-title">{{ item.title }}</h5>

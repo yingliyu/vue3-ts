@@ -1,6 +1,6 @@
 <template>
   <div class="post-wrapper">
-    <div v-for="post in list" :key="post.id" class="card p-3 mt-3">
+    <router-link :to="`/post/${post.id}`" v-for="post in list" :key="post.id" class="card p-3 mt-3">
       <h5 class="card-title">{{ post.title }}</h5>
       <div class="row g-0">
         <div class="col-md-2 ">
@@ -17,24 +17,24 @@
           </div>
         </div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import { PostProps } from "../../utils/testData";
+import { defineComponent, PropType } from 'vue';
+import { PostProps } from '../../utils/testData';
 export default defineComponent({
-  name: "index",
+  name: 'index',
   props: {
     list: {
       type: Array as PropType<PostProps[]>,
-      required: true,
-    },
+      required: true
+    }
   },
   components: {},
   setup() {
     return {};
-  },
+  }
 });
 </script>
 <style scoped lang="less"></style>

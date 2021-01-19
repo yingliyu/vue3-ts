@@ -8,7 +8,7 @@
           <router-link to="/login" class="pe-2 text-white text-decoration-none">登陆</router-link>
         </li>
         <li class="list-inline-item">
-          <router-link to="/login" class="text-white text-decoration-none">注册</router-link>
+          <router-link to="/sign" class="text-white text-decoration-none">注册</router-link>
         </li>
       </ul>
       <div v-else class="dropdown">
