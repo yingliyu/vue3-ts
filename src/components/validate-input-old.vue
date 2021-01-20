@@ -7,16 +7,18 @@
       id="exampleInputEmail1"
       v-if="tag !== 'textarea'"
       aria-describedby="emailHelp"
-      v-model="inputRef.val"
+      :value="inputRef.val"
       @blur="validateHandle"
+      @input="updateVal"
       v-bind="$attrs"
     />
     <textarea
       v-else
       class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
-      v-model="inputRef.val"
+      :value="inputRef.val"
       @blur="validateHandle"
+      @input="updateVal"
       v-bind="$attrs"
     ></textarea>
     <div class="invalid-feedback">
@@ -25,7 +27,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, PropType, reactive, computed } from 'vue';
+import { defineComponent, onMounted, PropType, reactive, watch, computed } from 'vue';
 import { emitter } from './validate-form.vue';
 const emailReg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
 interface RuleEmailProps {
@@ -49,16 +51,18 @@ export default defineComponent({
   // props are reactive
   setup(props, context) {
     const inputRef = reactive({
-      val: computed({
-        get: () => props.modelValue || '',
-        set: (val) => {
-          context.emit('update:modelValue', val);
-        }
-      }),
+      val: props.modelValue || '',
       error: false,
       message: ''
     });
 
+    const updateVal = (e: KeyboardEvent) => {
+      console.log('update trigger', props.modelValue);
+
+      const targetValue = (e.target as HTMLInputElement).value;
+      inputRef.val = targetValue;
+      context.emit('update:modelValue', targetValue);
+    };
     const validateHandle = () => {
       if (props.rules) {
         const allPassed = props.rules.every((rule) => {
@@ -88,7 +92,7 @@ export default defineComponent({
       // 给监听器发送信号
       emitter.emit('form-item-created', validateHandle);
     });
-    return { inputRef, validateHandle };
+    return { inputRef, validateHandle, updateVal };
   }
 });
 </script>

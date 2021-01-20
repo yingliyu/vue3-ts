@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { createStore, Commit } from 'vuex';
 import { objToArr, arrToObj } from '../utils/helper';
 export interface ResponseType<P = {}> {
@@ -22,10 +22,11 @@ export interface PostProps {
   title: string;
   content: string;
   avatar?: string;
-  image?: ImageProps | string;
+  image?: ImageProps;
   createdTime: string;
   cid: string;
-  author: string;
+  author?: UserProps;
+  authorId?: string;
 }
 export interface UserProps {
   isLogin: boolean;
@@ -33,6 +34,8 @@ export interface UserProps {
   id?: string;
   columnId?: string;
   email?: string;
+  avatar?: ImageProps;
+  description?: string;
 }
 export interface GlobalErrorProps {
   code: number;
@@ -52,10 +55,20 @@ export interface GlobalDataProps {
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await axios.get(url);
   commit(mutationName, data);
-
   return data;
   // await new Promise((resolve) => setTimeout(resolve, 3000)); //延时3s
   // commit('setLoading', false);
+};
+
+const asyncAndCommit = async (
+  url: string,
+  mutationName: string,
+  commit: Commit,
+  config: AxiosRequestConfig = { method: 'get' }
+) => {
+  const { data } = await axios(url, config);
+  commit(mutationName, data);
+  return data;
 };
 
 const store = createStore<GlobalDataProps>({
@@ -75,12 +88,8 @@ const store = createStore<GlobalDataProps>({
       state.posts.data[newPost.id] = newPost;
     },
     fetchColumns(state, rawData) {
-      // state.columns.data = rawData.data;
       const { data } = state.columns;
       const { list } = rawData.data;
-      console.log(list);
-      console.log(arrToObj(list));
-
       state.columns = {
         data: { ...data, ...arrToObj(list) },
         total: 1,
@@ -88,11 +97,11 @@ const store = createStore<GlobalDataProps>({
       };
     },
     fetchColumnById(state, { data }) {
-      // state.columns = rawData.data;
       state.columns.data[data._id] = data;
     },
-    fetchPostsByCid(state, { data }) {
-      state.posts.data[data.id];
+    fetchPostsByCid(state, { data: rawData, extraData: cid }) {
+      state.posts.data = { ...state.posts.data, ...arrToObj(rawData) };
+      state.posts.list.push(cid);
     },
     setLoading(state, status) {
       state.loading = status;
@@ -106,19 +115,29 @@ const store = createStore<GlobalDataProps>({
       localStorage.setItem('token', token);
       axios.defaults.headers.common['authorization'] = token;
     },
-
     setUserInfo(state, rawDate) {
       state.user = { isLogin: true, ...rawDate.data };
+    },
+    fetchPostDetail(state, rawData) {
+      state.posts.data[rawData.data.id] = rawData.data;
+    },
+    updatePost(state, { data }) {
+      state.posts.data[data.id] = data;
+      // state.posts = state.posts.data.map((post) => {
+      //   if (post.id === data.id) {
+      //     return data;
+      //   } else {
+      //     return post;
+      //   }
+      // });
+    },
+    deletePost(state, { data }) {
+      delete state.posts.data[data._id];
     }
   },
 
   // 异步操作
   actions: {
-    async createPostAction({ commit }, payload) {
-      const { data } = await axios.post('/zhihu/createPost', payload);
-      commit('createPostMutation', data);
-      return data;
-    },
     async login({ commit }, param) {
       const { data } = await axios.post('/zhihu/user/login', param);
       commit('login', data);
@@ -139,15 +158,47 @@ const store = createStore<GlobalDataProps>({
       // const { data } = await axios.get('/zhihu/column/list');
       // commit('fetchColumns', data);
     },
-    async getColumnByIdAction({ commit }, cid) {
-      return getAndCommit(`/zhihu/column/${cid}`, 'fetchColumnById', commit);
-      // const { data } = await axios.get(`/zhihu/column/${cid}`);
-      // commit('fetchColumnById', data);
+    async getColumnByIdAction({ state, commit }, cid) {
+      const currentColumn = state.columns.data[cid];
+      if (!currentColumn) {
+        return getAndCommit(`/zhihu/column/${cid}`, 'fetchColumnById', commit);
+      } else {
+        return Promise.resolve({ data: currentColumn });
+      }
     },
+    // 通过栏目id获取文章列表
     async getPostsByCidAction({ commit }, cid) {
       return getAndCommit(`/zhihu/column/${cid}/posts`, 'fetchPostsByCid', commit);
-      // const { data } = await axios.get(`/zhihu/column/${cid}/posts`);
-      // commit('fetchPostsByCid', data);
+    },
+    // 发表文章
+    async createPostAction({ commit }, payload) {
+      const { data } = await axios.post('/zhihu/createPost', payload);
+      commit('createPostMutation', data);
+      return data;
+    },
+    // 删除文章
+    async deletePostAction({ commit }, id) {
+      return asyncAndCommit(`/zhihu/posts/${id}`, 'deletePost', commit, {
+        method: 'delete'
+      });
+    },
+    //更新文章
+    updatePostAction({ commit }, { id, payload }) {
+      return asyncAndCommit(`/zhihu/posts/${id}`, 'updatePost', commit, {
+        method: 'patch',
+        data: payload
+      });
+    },
+    //通过文章id获取文章详情
+    async getPostDetailAction({ state, commit }, id) {
+      const currentPost = state.posts.data[id];
+      if (!currentPost || !currentPost.content) {
+        return getAndCommit(`/zhihu/post/${id}`, 'fetchPostDetail', commit);
+      } else {
+        console.log('else');
+
+        return Promise.resolve({ data: currentPost });
+      }
     }
   },
   // 抽象复杂的运算结果
@@ -163,6 +214,9 @@ const store = createStore<GlobalDataProps>({
     },
     getPostsByCid: (state) => (cid: string) => {
       return objToArr(state.posts?.data).filter((post) => post.cid === cid);
+    },
+    getCurrentPost: (state) => (id: string) => {
+      return state.posts.data[id];
     }
   }
 });

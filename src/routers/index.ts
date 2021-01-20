@@ -41,20 +41,20 @@ const router = createRouter({
         redirect: true
       }
     },
-    {
-      path: '/column',
-      name: 'column',
-      component: Column,
-      meta: {
-        requiresAuth: true
-      }
-    },
+    // {
+    //   path: '/column',
+    //   name: 'column',
+    //   component: Column,
+    //   meta: {
+    //     requiresAuth: false
+    //   }
+    // },
     {
       path: '/column/:id',
-      name: 'columnDetail',
+      name: 'column',
       component: ColumnDetail,
       meta: {
-        requiresAuth: true
+        requiresAuth: false
       }
     },
     {
@@ -70,7 +70,7 @@ const router = createRouter({
       name: 'postDetail',
       component: PostDetail,
       meta: {
-        requiresAuth: true
+        requiresAuth: false
       }
     }
   ]

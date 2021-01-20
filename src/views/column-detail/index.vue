@@ -1,8 +1,9 @@
 <template>
   <div class="column-detail-wrapper pt-3">
-    <div class="row py-3 border-bottom justify-content-center">
+    <h2>专栏信息</h2>
+    <div class="row py-3 mb-3 border-bottom justify-content-center">
       <div class="col-md-2">
-        <img :src="columnDetail.avatar" />
+        <img :src="columnDetail.avatar && columnDetail.avatar.url" />
       </div>
       <div class="col-md-8">
         <h5 class="title">{{ columnDetail.title }}</h5>
@@ -31,7 +32,7 @@ export default defineComponent({
       dispatch('getPostsByCidAction', currentColumnId);
     });
     const columnDetail = computed(() => getters.getColumnById(currentColumnId));
-    const postList = computed(() => state.posts);
+    const postList = computed(() => state.posts.data);
     return { route, columnDetail, postList };
   }
 });

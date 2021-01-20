@@ -1,8 +1,9 @@
 <template>
   <div class="create-post-wrapper pt-3">
-    <h2 class="py-3">新建文章</h2>
+    <h2 class="py-3">{{ isEditMode ? '编辑文章' : '新建文章' }}</h2>
     <uploader
       action="/zhihu/upload"
+      :uploaded="uploadedData"
       :beforeUpload="beforeUploadCheck"
       @file-uploaded="onFileUploaded"
       class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4"
@@ -19,7 +20,7 @@
       <template #uploaded="dataProps">
         <div class="upload-area">
           <img :src="dataProps.uploadedData.data.url" width="200" />
-          <h3>点击重新上传</h3>
+          <h3 class="text-center mt-2">点击重新上传</h3>
         </div>
       </template>
     </uploader>
@@ -28,7 +29,7 @@
         <validate-input
           label="文章标题"
           placeholder="请输入文章标题..."
-          :modelValue="title"
+          v-model="title"
           :rules="titleRules"
         ></validate-input>
       </div>
@@ -37,21 +38,21 @@
           tag="textarea"
           label="文章详情"
           placeholder="请输入文章详情..."
-          :modelValue="content"
+          v-model="content"
           :rows="10"
           :rules="postRules"
         ></validate-input>
       </div>
       <template #submit>
-        <span class="btn btn-primary">发布文章</span>
+        <span class="btn btn-primary">{{ isEditMode ? '更新' : '发表' }}文章</span>
       </template>
     </validate-form>
   </div>
 </template>
 <script lang="ts">
 import { GlobalDataProps } from '@/stores/state';
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, onMounted, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import Uploader from '../../components/uploader/index.vue';
 import { ImageProps, ResponseType, PostProps } from '../../stores/state';
@@ -66,9 +67,31 @@ export default defineComponent({
   setup() {
     const store = useStore<GlobalDataProps>();
     const router = useRouter();
+    const route = useRoute();
     let imageId = '';
-    const title = ref('我的文章标题呀');
-    const content = ref('我的文章内容有很多很多很多...');
+    const uploadedData = ref();
+    const title = ref('');
+    const content = ref('');
+    // 是否是编辑模式
+    const isEditMode = !!route.query.id;
+
+    onMounted(() => {
+      // console.log(route.query.id);
+      if (isEditMode) {
+        store
+          .dispatch('getPostDetailAction', route.query.id)
+          .then((rawData: ResponseType<PostProps>) => {
+            const currentPost = rawData.data;
+            if (currentPost.image) {
+              uploadedData.value = { data: currentPost.image };
+            }
+            title.value = currentPost.title;
+            content.value = currentPost.content;
+            console.log(rawData);
+          });
+      }
+    });
+
     const titleRules = [{ type: 'required', message: '文章标题不能为空' }];
     const postRules = [{ type: 'required', message: '文章内容不能为空' }];
     const onFileUploaded = (rawData: ResponseType<ImageProps>) => {
@@ -88,11 +111,19 @@ export default defineComponent({
             content: content.value,
             cid: columnId,
             createdTime: new Date().toLocaleString(),
-            author: id as string,
-            image: imageId
+            authorId: id as string
+            // image: imageId
           };
-          store.dispatch('createPostAction', newPost).then(() => {
-            createMessage('发表成功，2s后跳转到文章', 'success', 2000);
+          const actionName = isEditMode ? 'updatePostAction' : 'createPostAction';
+          const params = isEditMode
+            ? {
+                id: route.query.id,
+                payload: newPost
+              }
+            : newPost;
+          const operateMsg = isEditMode ? '更新' : '发表';
+          store.dispatch(actionName, params).then(() => {
+            createMessage(`${operateMsg}成功，2s后跳转到文章`, 'success', 2000);
             setTimeout(() => {
               router.push({
                 name: 'column',
@@ -100,21 +131,9 @@ export default defineComponent({
               });
             }, 2000);
           });
-          // store.commit('createPost', newPost);
-          // router.push({
-          //   name: 'column',
-          //   params: { id: columnId }
-          // });
         }
       }
     };
-    // const beforeUpload = (file: File) => {
-    //   const isForm = file.type === 'image/jpg' || file.type === 'image/png';
-    //   if (!isForm) {
-    //     createMessage('上传图片只能是JPG或PNG格式', 'error');
-    //   }
-    //   return isForm;
-    // };
 
     const beforeUploadCheck = (file: File) => {
       const res = checkBeforeUpload(file, {
@@ -131,12 +150,13 @@ export default defineComponent({
       return passed;
     };
     return {
+      isEditMode,
       titleRules,
       postRules,
+      uploadedData,
       title,
       content,
       onFormSubmit,
-      // beforeUpload,
       onFileUploaded,
       beforeUploadCheck
     };
