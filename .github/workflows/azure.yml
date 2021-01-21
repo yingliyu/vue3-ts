@@ -1,4 +1,4 @@
-name: Hexo deployer # Actions 名字
+name: Vue3-TS deployer # Actions 名字
 
 on: # 触发条件
   push:
@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: 10.x
 
-      - name: Setup hexo env
+      - name: Setup env
         run: |
           npm install
 
-      - name: Generate public files
+      - name: Generate dist files
         run: |
           npm run build
 
