@@ -18,15 +18,15 @@ jobs:
         with:
           node-version: 10.x
 
-      - name: Setup hexo env
+      - name: Install Packages
         run: |
           npm install
 
-      - name: Generate public files
+      - name: Build page
         run: |
           npm run build
 
-      - name: Deploy
+      - name: Deploy to gh-pages
         env:
           GH_REF: github.com/yingliyu/vue3-ts-pro.git
           # github.com/lemon1499/lemon1499.github.io.git
