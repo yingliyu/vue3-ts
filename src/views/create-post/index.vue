@@ -86,8 +86,7 @@ export default defineComponent({
               uploadedData.value = { data: currentPost.image };
             }
             title.value = currentPost.title;
-            content.value = currentPost.content;
-            console.log(rawData);
+            content.value = currentPost.content || '';
           });
       }
     });

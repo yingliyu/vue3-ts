@@ -49,8 +49,8 @@ export interface GlobalDataProps {
   token: string;
   loading: boolean;
   user: UserProps;
-  columns: { data: ListProps<ColumnProps>; isLoaded: boolean; total: number };
-  posts: { data: ListProps<PostProps>; list: string[] };
+  columns: { data: ListProps<ColumnProps>; currentPage: number; total: number };
+  posts: { data: ListProps<PostProps>; loadedColumns: string[] };
 }
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await axios.get(url);
@@ -79,21 +79,22 @@ const store = createStore<GlobalDataProps>({
     token: localStorage.getItem('token') || '',
     loading: false,
     user: { isLogin: false },
-    columns: { data: {}, isLoaded: false, total: 0 },
-    posts: { data: {}, list: [] }
+    columns: { data: {}, currentPage: 0, total: 0 },
+    posts: { data: {}, loadedColumns: [] }
   },
   // 同步操作 修改全局状态
   mutations: {
     createPostMutation(state, newPost) {
       state.posts.data[newPost.id] = newPost;
     },
+    // 栏目列表数据更新
     fetchColumns(state, rawData) {
       const { data } = state.columns;
-      const { list } = rawData.data;
+      const { list, total, currentPage } = rawData.data;
       state.columns = {
-        data: { ...data, ...arrToObj(list) },
-        total: 1,
-        isLoaded: true
+        data: { ...data, ...arrToObj(list) }, // 添加非覆盖
+        total: total,
+        currentPage: currentPage * 1
       };
     },
     fetchColumnById(state, { data }) {
@@ -101,7 +102,7 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPostsByCid(state, { data: rawData, extraData: cid }) {
       state.posts.data = { ...state.posts.data, ...arrToObj(rawData) };
-      state.posts.list.push(cid);
+      state.posts.loadedColumns.push(cid);
     },
     setLoading(state, status) {
       state.loading = status;
@@ -123,13 +124,6 @@ const store = createStore<GlobalDataProps>({
     },
     updatePost(state, { data }) {
       state.posts.data[data.id] = data;
-      // state.posts = state.posts.data.map((post) => {
-      //   if (post.id === data.id) {
-      //     return data;
-      //   } else {
-      //     return post;
-      //   }
-      // });
     },
     deletePost(state, { data }) {
       delete state.posts.data[data._id];
@@ -144,22 +138,28 @@ const store = createStore<GlobalDataProps>({
       return data;
     },
     async getUserInfo({ commit }) {
-      // const { data } = await axios.post('/zhihu/user/login', param);
       return getAndCommit('/zhihu/getUserInfo', 'setUserInfo', commit);
     },
-    // 组合actions
+    // 登陆组合actions
     loginAndFetch({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
         return dispatch('getUserInfo');
       });
     },
-    async getColumnsAction({ commit }) {
-      return getAndCommit('/zhihu/column/list', 'fetchColumns', commit);
-      // const { data } = await axios.get('/zhihu/column/list');
-      // commit('fetchColumns', data);
+    // 获取专栏列表
+    async getColumnsAction({ state, commit }, params = {}) {
+      const { currentPage = 1, pageSize = 6 } = params;
+      if (state.columns.currentPage < currentPage) {
+        return getAndCommit(
+          `/zhihu/columns?currentPage=${currentPage}&pageSize=${pageSize}`,
+          'fetchColumns',
+          commit
+        );
+      }
     },
     async getColumnByIdAction({ state, commit }, cid) {
       const currentColumn = state.columns.data[cid];
+      // 优化：减少不必要的请求
       if (!currentColumn) {
         return getAndCommit(`/zhihu/column/${cid}`, 'fetchColumnById', commit);
       } else {
@@ -167,8 +167,10 @@ const store = createStore<GlobalDataProps>({
       }
     },
     // 通过栏目id获取文章列表
-    async getPostsByCidAction({ commit }, cid) {
-      return getAndCommit(`/zhihu/column/${cid}/posts`, 'fetchPostsByCid', commit);
+    async getPostsByCidAction({ state, commit }, cid) {
+      if (!state.posts.loadedColumns.includes(cid)) {
+        return getAndCommit(`/zhihu/column/${cid}/posts`, 'fetchPostsByCid', commit);
+      }
     },
     // 发表文章
     async createPostAction({ commit }, payload) {
@@ -195,8 +197,6 @@ const store = createStore<GlobalDataProps>({
       if (!currentPost || !currentPost.content) {
         return getAndCommit(`/zhihu/post/${id}`, 'fetchPostDetail', commit);
       } else {
-        console.log('else');
-
         return Promise.resolve({ data: currentPost });
       }
     }

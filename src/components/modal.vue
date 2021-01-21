@@ -1,5 +1,5 @@
 <template>
-  <teleport to="#modal">
+  <teleport to="body">
     <div class="modal d-block" tabindex="-1" v-if="visible">
       <div class="modal-dialog">
         <div class="modal-content">
