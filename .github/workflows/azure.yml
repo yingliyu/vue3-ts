@@ -3,7 +3,7 @@ name: Vue3-TS deployer # Actions 名字
 on: # 触发条件
   push:
     branches:
-      - dev # 仅向dev 分支 push 时触发
+      - gh-pages # 仅向gh-pages 分支 push 时触发
 
 jobs:
   build: # job id
