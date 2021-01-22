@@ -11,7 +11,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import axios from "axios";
 // 使用composition API: 相关的feature组合在一起；比minix可以更高效的重用模块；
-import { computed, defineComponent, onMounted, reactive, watch, ref } from 'vue';
+import { computed, defineComponent, reactive, watch, ref } from 'vue';
 import GlobalHeader from './components/global-header.vue';
 import FooterItem from './components/footer/index.vue';
 import { useStore } from 'vuex';
