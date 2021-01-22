@@ -1,4 +1,4 @@
-name: Vue3-TS deployer # Actions 名字
+name: vue3-ts deployer # Actions 名字
 
 on: # 触发条件
   push:
@@ -22,7 +22,7 @@ jobs:
         run: |
           npm install
 
-      - name: Build page
+      - name: Build app
         run: |
           npm run build
 
@@ -30,7 +30,7 @@ jobs:
         env:
           GH_REF: github.com/yingliyu/vue3-ts-pro.git
           # github.com/lemon1499/lemon1499.github.io.git
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN_VUE3_PRO }} # github token
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # github token
           # CODING_REF: e.coding.net/ylyu/blog.git
           # git.dev.tencent.com/ylyu/ylyu.git
           #  CODING_TOKEN: ${{ secrets.CODING_ACCESS_TOKEN }} # coding token
