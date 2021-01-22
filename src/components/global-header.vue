@@ -40,9 +40,9 @@ export default defineComponent({
     }
   },
   components: { Dropdown, DropdownItem },
-  setup(props) {
+  setup() {
     onMounted(() => {
-      console.log(props.user.name);
+      // console.log(props.user.name);
     });
   }
 });
