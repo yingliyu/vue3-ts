@@ -52,11 +52,12 @@ import { computed, defineComponent, onMounted, ref } from 'vue';
 import MarkdownIt from 'markdown-it';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
-import store, { PostProps, ResponseType } from '../../stores/state';
-import Modal from '../../components/modal.vue';
+import store from '../../stores/index';
+import { PostProps, ResponseType } from '../../stores/type';
+import Modal from '@/components/modal.vue';
 import createMessage from '@/components/create-message';
 export default defineComponent({
-  name: 'index',
+  name: 'PostDetail',
   props: {},
   components: { Modal },
   setup() {

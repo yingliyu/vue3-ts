@@ -1,8 +1,9 @@
 import { createApp } from 'vue';
-import store from './stores/state';
+import store from './stores/index';
 import router from './routers/index';
 import App from './app.vue';
 import axios from 'axios';
+import { mapMutations } from 'vuex';
 // Before you create app
 // Vue.config.devtools = process.env.NODE_ENV === "development";
 const app = createApp(App);
@@ -28,20 +29,20 @@ axios.defaults.baseURL = 'http://rap2api.taobao.org/app/mock/274855';
 // test().then((value) => console.log(value));
 // console.log(test());
 axios.interceptors.request.use((config) => {
-  store.commit('setLoading', true);
-  store.commit('setError', { code: 200, message: '' });
+  // store.commit('setLoading', true);
+  // store.commit('setError', { code: 200, message: '' });
   return config;
 });
 
 axios.interceptors.response.use(
   (config) => {
-    store.commit('setLoading', false);
+    // store.commit('setLoading', false);
     return config;
   },
   (e) => {
     const { type } = new Event(e);
-    store.commit('setError', { code: 404, message: type });
-    store.commit('setLoading', false);
+    // store.commit('setError', { code: 404, message: type });
+    // store.commit('setLoading', false);
     return Promise.reject(type);
   }
 );

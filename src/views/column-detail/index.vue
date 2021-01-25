@@ -16,24 +16,33 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
+import { mapGetters, useStore } from 'vuex';
 import Post from '../../components/post-list/index.vue';
-import { GlobalDataProps } from '@/stores/state';
+import { GlobalDataProps } from '@/stores/type';
 export default defineComponent({
   name: 'index',
   props: {},
   components: { Post },
+  computed: {
+    ...mapGetters('columns', { columnDetail: 'getColumnById' })
+  },
+  mounted() {
+    const route = useRoute();
+    const currentColumnId = route.params.id;
+    this.columnDetail(currentColumnId);
+  },
   setup() {
     const route = useRoute();
     const currentColumnId = route.params.id;
     const { dispatch, getters, state } = useStore<GlobalDataProps>();
     onMounted(() => {
-      dispatch('getColumnByIdAction', currentColumnId);
-      dispatch('getPostsByCidAction', currentColumnId);
+      dispatch('columns/getColumnByIdAction', currentColumnId);
+      dispatch('posts/getPostsByCidAction', currentColumnId);
     });
-    const columnDetail = computed(() => getters.getColumnById(currentColumnId));
+    // const columnDetail = computed(() => getters.getColumnById(currentColumnId));
     const postList = computed(() => state.posts.data);
-    return { route, columnDetail, postList };
+
+    return { route, postList };
   }
 });
 </script>

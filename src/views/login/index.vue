@@ -54,12 +54,12 @@ export default defineComponent({
     ValidateForm,
     ValidateInput
   },
+
   setup() {
     const store = useStore();
     const router = useRouter();
     const emailRef = ref('');
     const passwordVal = ref('');
-
     const emailRules: RuleEmailType = [
       {
         type: 'required',
@@ -81,7 +81,6 @@ export default defineComponent({
         store
           .dispatch('loginAndFetch', payload)
           .then((data) => {
-            console.log(data);
             createMessage('登陆成功 2s后跳转到首页', 'success');
             setTimeout(() => {
               router.push('/');

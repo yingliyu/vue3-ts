@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/home/index.vue';
 import Login from '../views/login/index.vue';
-import Column from '../views/column/index.vue';
+// import Column from '../views/column/index.vue';
 import ColumnDetail from '../views/column-detail/index.vue';
 import PostDetail from '../views/post-detail/index.vue';
 import PostCreate from '../views/create-post/index.vue';
 import Sign from '../views/signin/index.vue';
-import store from '@/stores/state';
+import store from '@/stores/index';
 import axios from 'axios';
 
 const routerHistory = createWebHistory();
@@ -79,13 +79,14 @@ router.beforeEach((to, from, next) => {
   // console.log("to====", to);
   // console.log("from====", from);
   // 权限管理 —— 未登陆就重定向至登陆页
-  const { user, token } = store.state;
+
+  const { isLogin, token } = store.state.user;
   const { requiredLogin, redirectAlreadyLogin } = to.meta;
-  if (!user.isLogin) {
+  if (!isLogin) {
     if (token) {
       axios.defaults.headers.common.authorization = token;
       store
-        .dispatch('getUserInfo')
+        .dispatch('user/getUserInfo')
         .then(() => {
           if (redirectAlreadyLogin) {
             next('/');
@@ -113,9 +114,9 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  if (to.meta.requiresAuth && to.name !== 'login' && !user.isLogin) {
+  if (to.meta.requiresAuth && to.name !== 'login' && !isLogin) {
     next({ name: 'login' });
-  } else if (to.meta.redirect && store.state.user.isLogin) {
+  } else if (to.meta.redirect && isLogin) {
     next({ name: '/' });
   } else {
     next();
