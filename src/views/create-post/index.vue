@@ -50,12 +50,12 @@
   </div>
 </template>
 <script lang="ts">
-import { GlobalDataProps } from '@/stores/state';
+import { GlobalDataProps } from '@/stores/index';
 import { defineComponent, onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import Uploader from '../../components/uploader/index.vue';
-import { ImageProps, ResponseType, PostProps } from '../../stores/state';
+import { ImageProps, ResponseType, PostProps } from '../../stores/index';
 import ValidateForm from '../../components/validate-form.vue';
 import ValidateInput from '../../components/validate-input.vue';
 import createMessage from '../../components/create-message/index';

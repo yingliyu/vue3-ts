@@ -6,7 +6,7 @@ import ColumnDetail from '../views/column-detail/index.vue';
 import PostDetail from '../views/post-detail/index.vue';
 import PostCreate from '../views/create-post/index.vue';
 import Sign from '../views/signin/index.vue';
-import store from '@/stores/state';
+import store from '@/stores/index';
 import axios from 'axios';
 
 const routerHistory = createWebHistory();

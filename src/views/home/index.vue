@@ -20,7 +20,7 @@
 import { defineComponent, computed, onMounted } from 'vue';
 import columnList from '../../components/column-item.vue';
 import { useStore } from 'vuex';
-import { GlobalDataProps } from '../../stores/state';
+import { GlobalDataProps } from '../../stores/index';
 import useLoadMore from '../../hooks/use-load-more';
 export default defineComponent({
   name: 'Home',

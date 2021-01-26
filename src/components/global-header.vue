@@ -29,7 +29,7 @@
 import { defineComponent, onMounted, PropType } from 'vue';
 import Dropdown from './dropdown.vue';
 import DropdownItem from './dropdown-item.vue';
-import { UserProps } from '../stores/state';
+import { UserProps } from '../stores/index';
 
 export default defineComponent({
   name: 'GlobalHeader',
