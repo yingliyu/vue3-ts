@@ -125,7 +125,7 @@ const mutations: MutationTree<State> = {
 };
 
 const store = {
-  // namespaced: true,
+  namespaced: true,
   state,
   getters,
   actions,

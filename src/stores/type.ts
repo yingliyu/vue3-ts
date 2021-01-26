@@ -35,6 +35,7 @@ export interface UserProps {
   description?: string;
   token?: string;
 }
+
 export interface GlobalErrorProps {
   code: number;
   message?: string;
@@ -58,4 +59,15 @@ export interface GlobalDataProps {
   // token: string;
   columns: ColumnsState;
   posts: PostState;
+  app: AppState;
 }
+
+export interface AppState {
+  error: GlobalErrorProps;
+  loading: boolean;
+}
+// export interface UserState {
+//   isLogin: boolean;
+//   user: UserProps;
+//   token: string;
+// }

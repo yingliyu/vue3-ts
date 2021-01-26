@@ -34,7 +34,7 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const currentColumnId = route.params.id;
-    const { dispatch, getters, state } = useStore<GlobalDataProps>();
+    const { dispatch, state } = useStore<GlobalDataProps>();
     onMounted(() => {
       dispatch('columns/getColumnByIdAction', currentColumnId);
       dispatch('posts/getPostsByCidAction', currentColumnId);

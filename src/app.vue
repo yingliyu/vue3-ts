@@ -2,8 +2,11 @@
   <div class="container">
     <loading v-if="isLoading" text="努力加载中..." background="rgba(0,0,0,0.7)"></loading>
     <global-header :user="userInfo" />
+    <pre>isLogin: {{ isLogin }}</pre>
+    <pre>userInfo: {{ userInfo }}</pre>
     <router-view></router-view>
   </div>
+
   <footer-item />
 </template>
 
@@ -13,7 +16,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { computed, defineComponent, reactive, watch, ref } from 'vue';
 import GlobalHeader from './components/global-header.vue';
 import FooterItem from './components/footer/index.vue';
-import { useStore } from 'vuex';
+import { mapState, useStore } from 'vuex';
 import Loading from './components/loading/index.vue';
 import createMessage from './components/create-message/index';
 export default defineComponent({
@@ -23,6 +26,9 @@ export default defineComponent({
     FooterItem,
     Loading
   },
+  computed: {
+    ...mapState({ isLogin: (state: any) => state.user.isLogin })
+  },
   setup() {
     const { state } = useStore();
     const loginData = reactive({
@@ -30,9 +36,15 @@ export default defineComponent({
       password: ''
     });
     const userInfo = computed(() => state.user);
+    console.log(
+      'mapState:',
+      computed(() => mapState({ isLogin: (state: any) => state.user.isLogin }))
+    );
+
     const isLoading = computed(() => state.app.loading);
     const error = computed(() => state.app.error);
     const showErrorMsg = ref(false);
+
     watch(
       () => error.value.code,
       () => {

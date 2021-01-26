@@ -19,7 +19,7 @@ const mutations: MutationTree<State> = {
   }
 };
 export default {
-  // namespaced: true,
+  namespaced: true,
   state,
   mutations
 };

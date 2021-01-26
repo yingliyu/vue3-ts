@@ -18,10 +18,15 @@ export const asyncAndCommit = async (
   url: string,
   mutationName: string,
   commit: Commit,
-  config: AxiosRequestConfig = { method: 'get' }
+  config: AxiosRequestConfig = { method: 'get' },
+  extraData?: any
 ) => {
   const { data } = await axios(url, config);
-  commit(mutationName, data);
+  if (extraData) {
+    commit(mutationName, { data, extraData });
+  } else {
+    commit(mutationName, data);
+  }
   return data;
 };
 

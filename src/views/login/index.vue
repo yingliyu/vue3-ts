@@ -43,10 +43,7 @@ import { useStore } from 'vuex';
 import ValidateInput, { RuleEmailType } from '../../components/validate-input.vue';
 import ValidateForm from '../../components/validate-form.vue';
 import createMessage from '../../components/create-message/index';
-interface LoginProps {
-  name: string;
-  password: string;
-}
+
 export default defineComponent({
   name: 'Login',
   props: {},
@@ -54,7 +51,6 @@ export default defineComponent({
     ValidateForm,
     ValidateInput
   },
-
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -79,7 +75,7 @@ export default defineComponent({
       };
       if (result) {
         store
-          .dispatch('loginAndFetch', payload)
+          .dispatch('user/loginAndFetch', payload)
           .then((data) => {
             createMessage('登陆成功 2s后跳转到首页', 'success');
             setTimeout(() => {
@@ -87,7 +83,7 @@ export default defineComponent({
             }, 2000);
           })
           .catch((e) => {
-            console.log('login error===', e);
+            console.log('login error: ', e);
           });
       }
     };
