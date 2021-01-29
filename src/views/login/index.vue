@@ -75,8 +75,10 @@ export default defineComponent({
       };
       if (result) {
         store
-          .dispatch('user/loginAndFetch', payload)
+          .dispatch('user/loginAndFetch', payload, { root: true })
           .then((data) => {
+            console.log(store);
+
             createMessage('登陆成功 2s后跳转到首页', 'success');
             setTimeout(() => {
               router.push('/');

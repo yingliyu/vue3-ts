@@ -266,7 +266,7 @@ const store = createStore<GlobalDataProps>({
       return data;
     },
     async getUserInfo({ commit }) {
-      return getAndCommit('/zhihu/getUserInfo', 'setUserInfo', commit);
+      return getAndCommit('/zhihu/currentUser', 'setUserInfo', commit);
     },
     // 登陆组合actions
     loginAndFetch({ dispatch }, loginData) {

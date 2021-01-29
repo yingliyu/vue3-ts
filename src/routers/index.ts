@@ -20,7 +20,7 @@ const router = createRouter({
       component: Home,
       // 路由元信息
       meta: {
-        requiresAuth: false
+        requiredLogin: false
       }
     },
     {
@@ -28,8 +28,7 @@ const router = createRouter({
       name: 'login',
       component: Login,
       meta: {
-        requiresAuth: true,
-        redirect: true
+        redirectAlreadyLogin: true
       }
     },
     {
@@ -37,8 +36,7 @@ const router = createRouter({
       name: 'sign',
       component: Sign,
       meta: {
-        requiresAuth: false,
-        redirect: true
+        redirectAlreadyLogin: true
       }
     },
     // {
@@ -46,7 +44,7 @@ const router = createRouter({
     //   name: 'column',
     //   component: Column,
     //   meta: {
-    //     requiresAuth: false
+    //     requiredLogin: false
     //   }
     // },
     {
@@ -54,7 +52,7 @@ const router = createRouter({
       name: 'column',
       component: ColumnDetail,
       meta: {
-        requiresAuth: false
+        requiredLogin: false
       }
     },
     {
@@ -62,7 +60,7 @@ const router = createRouter({
       name: 'createPost',
       component: PostCreate,
       meta: {
-        requiresAuth: true
+        requiredLogin: true
       }
     },
     {
@@ -70,23 +68,24 @@ const router = createRouter({
       name: 'postDetail',
       component: PostDetail,
       meta: {
-        requiresAuth: false
+        requiredLogin: false
       }
     }
   ]
 });
+
 router.beforeEach((to, from, next) => {
   // console.log("to====", to);
   // console.log("from====", from);
   // 权限管理 —— 未登陆就重定向至登陆页
-
   const { isLogin, token } = store.state.user;
+
   const { requiredLogin, redirectAlreadyLogin } = to.meta;
   if (!isLogin) {
     if (token) {
       axios.defaults.headers.common.authorization = token;
       store
-        .dispatch('user/getUserInfo')
+        .dispatch('user/getUserInfo', '', { root: true })
         .then(() => {
           if (redirectAlreadyLogin) {
             next('/');
@@ -97,7 +96,7 @@ router.beforeEach((to, from, next) => {
         .catch((e) => {
           console.log(e);
           localStorage.removeItem('token');
-          next('login');
+          next('/login');
         });
     } else {
       if (requiredLogin) {
@@ -114,7 +113,7 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  if (to.meta.requiresAuth && to.name !== 'login' && !isLogin) {
+  if (to.meta.requiredLogin && to.name !== 'login' && !isLogin) {
     next({ name: 'login' });
   } else if (to.meta.redirect && isLogin) {
     next({ name: '/' });

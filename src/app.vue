@@ -13,7 +13,7 @@
 <script lang="ts">
 import 'bootstrap/dist/css/bootstrap.min.css';
 // 使用composition API: 相关的feature组合在一起；比minix可以更高效的重用模块；
-import { computed, defineComponent, reactive, watch, ref } from 'vue';
+import { computed, defineComponent, reactive, watch, ref, onMounted, onUpdated } from 'vue';
 import GlobalHeader from './components/global-header.vue';
 import FooterItem from './components/footer/index.vue';
 import { mapState, useStore } from 'vuex';
@@ -26,23 +26,18 @@ export default defineComponent({
     FooterItem,
     Loading
   },
-  computed: {
-    ...mapState({ isLogin: (state: any) => state.user.isLogin })
-  },
+
   setup() {
-    const { state } = useStore();
+    const store = useStore();
     const loginData = reactive({
       name: '',
       password: ''
     });
-    const userInfo = computed(() => state.user);
-    console.log(
-      'mapState:',
-      computed(() => mapState({ isLogin: (state: any) => state.user.isLogin }))
-    );
+    const isLogin = computed(() => store.getters['user/isLogin']);
+    const userInfo = computed(() => store.state.user);
 
-    const isLoading = computed(() => state.app.loading);
-    const error = computed(() => state.app.error);
+    const isLoading = computed(() => store.state.app.loading);
+    const error = computed(() => store.state.app.error);
     const showErrorMsg = ref(false);
 
     watch(
@@ -55,6 +50,7 @@ export default defineComponent({
       }
     );
     return {
+      isLogin,
       ...loginData,
       userInfo,
       isLoading,

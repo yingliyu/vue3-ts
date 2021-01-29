@@ -1,10 +1,10 @@
 import { asyncAndCommit } from '../index';
 import axios from 'axios';
-import { GlobalDataProps, UserProps as State } from '../type';
-import { ActionTree, GetterTree, MutationTree } from 'vuex';
+import { GlobalDataProps } from '../type';
+import { ActionTree, GetterTree, Module, MutationTree } from 'vuex';
 
 // initial state
-const state: State = {
+const state = {
   isLogin: false,
   id: '2dfECdcC-47E7-264E-d5b6-Ac993ceA6BDE',
   email: 'k.nwhnoz@cjzmg.vg',
@@ -14,16 +14,23 @@ const state: State = {
   columnId: '1',
   token: localStorage.getItem('token') || ''
 };
-
+type UserStateType = typeof state;
 // getters
-const getters: GetterTree<State, GlobalDataProps> = {};
+const getters: GetterTree<UserStateType, GlobalDataProps> = {
+  isLogin(state) {
+    return state.isLogin;
+  }
+};
+
 // actions
-const actions: ActionTree<State, GlobalDataProps> = {
+const actions: ActionTree<UserStateType, GlobalDataProps> = {
   login({ commit }, payload) {
+    console.log('login');
+
     return asyncAndCommit('/zhihu/user/login', 'login', commit, { method: 'post', data: payload });
   },
-  getUserInfo({ commit }) {
-    return asyncAndCommit('/zhihu/getUserInfo', 'setUserInfo', commit);
+  async getUserInfo({ commit }) {
+    return asyncAndCommit('/zhihu/currentUser', 'setUserInfo', commit);
   },
   // 登陆组合actions
   loginAndFetch({ dispatch }, loginData) {
@@ -34,7 +41,7 @@ const actions: ActionTree<State, GlobalDataProps> = {
 };
 
 // mutations
-const mutations: MutationTree<State> = {
+const mutations: MutationTree<UserStateType> = {
   login(state, rawData) {
     const { token } = rawData.data;
     state.token = token;
@@ -43,14 +50,16 @@ const mutations: MutationTree<State> = {
   },
   setUserInfo(state, { data }) {
     state = data && { isLogin: true, ...data };
-    console.log('state user: ', state);
+    console.log(state);
   }
 };
 
-export default {
+const user: Module<UserStateType, GlobalDataProps> = {
   namespaced: true,
   state,
   getters,
   actions,
   mutations
 };
+
+export default user;

@@ -36,12 +36,11 @@ export default defineComponent({
     const currentColumnId = route.params.id;
     const { dispatch, state, getters } = useStore<GlobalDataProps>();
     onMounted(() => {
-      dispatch('columns/getColumnByIdAction', currentColumnId);
-      dispatch('posts/getPostsByCidAction', currentColumnId);
+      dispatch('columns/getColumnByIdAction', currentColumnId, { root: true });
+      dispatch('posts/getPostsByCidAction', currentColumnId, { root: true });
     });
     const columnDetail = computed(() => getters['columns/getColumnById'](currentColumnId));
     const postList = computed(() => state.posts.data);
-    console.log('columnDetail====', columnDetail);
 
     return { columnDetail, route, postList };
   }

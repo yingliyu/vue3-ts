@@ -78,7 +78,7 @@ export default defineComponent({
       // console.log(route.query.id);
       if (isEditMode) {
         store
-          .dispatch('posts/getPostDetailAction', route.query.id)
+          .dispatch('posts/getPostDetailAction', route.query.id, { root: true })
           .then((rawData: ResponseType<PostProps>) => {
             const currentPost = rawData.data;
             if (currentPost.image) {
@@ -120,7 +120,7 @@ export default defineComponent({
               }
             : newPost;
           const operateMsg = isEditMode ? '更新' : '发表';
-          store.dispatch(actionName, params).then(() => {
+          store.dispatch(actionName, params, { root: true }).then(() => {
             createMessage(`${operateMsg}成功，2s后跳转到文章`, 'success', 2000);
             setTimeout(() => {
               router.push({

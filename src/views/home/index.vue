@@ -35,7 +35,7 @@ export default defineComponent({
     const currentPage = computed(() => store.state.columns.currentPage);
     // 全局类型会有自动补全功能
     onMounted(() => {
-      store.dispatch('columns/getColumnsAction', { pageSize: 6 });
+      store.dispatch('columns/getColumnsAction', { pageSize: 6 }, { root: true });
     });
     // 状态储存是响应式，从store实例读取状态最简单的方法是在计算属性中返回某个状态
 

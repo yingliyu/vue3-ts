@@ -1,15 +1,12 @@
 import { createStore, Commit } from 'vuex';
 import axios, { AxiosRequestConfig } from 'axios';
-import user from './modules/user';
-import columns from './modules/column';
-import posts from './modules/post';
 import app from './modules/app';
+import user from './modules/user';
+import columns from './modules/columns';
+import posts from './modules/posts';
 import { GlobalDataProps } from '@/stores/type';
 
 export const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
-  const testd = await axios.get(url);
-  console.log(testd);
-
   const { data } = await axios.get(url);
   commit(mutationName, data);
   return data;
@@ -33,7 +30,7 @@ export const asyncAndCommit = async (
   return data;
 };
 
-const store = createStore({
+const store = createStore<GlobalDataProps>({
   modules: {
     app,
     user,
@@ -41,6 +38,5 @@ const store = createStore({
     columns
   }
 });
-console.log(store);
 
 export default store;
