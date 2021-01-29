@@ -78,7 +78,7 @@ export default defineComponent({
       // console.log(route.query.id);
       if (isEditMode) {
         store
-          .dispatch('getPostDetailAction', route.query.id)
+          .dispatch('posts/getPostDetailAction', route.query.id)
           .then((rawData: ResponseType<PostProps>) => {
             const currentPost = rawData.data;
             if (currentPost.image) {
@@ -112,7 +112,7 @@ export default defineComponent({
             authorId: id as string
             // image: imageId
           };
-          const actionName = isEditMode ? 'updatePostAction' : 'createPostAction';
+          const actionName = isEditMode ? 'posts/updatePostAction' : 'posts/createPostAction';
           const params = isEditMode
             ? {
                 id: route.query.id,

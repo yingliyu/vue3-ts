@@ -25,9 +25,9 @@ import useLoadMore from '../../hooks/use-load-more';
 export default defineComponent({
   name: 'Home',
   components: { columnList },
-  computed: {
-    ...mapGetters('columns', { list: 'getColumns' })
-  },
+  // computed: {
+  //   ...mapGetters('columns', { list: 'getColumns' })
+  // },
 
   setup() {
     const store = useStore<GlobalDataProps>();
@@ -39,17 +39,16 @@ export default defineComponent({
     });
     // 状态储存是响应式，从store实例读取状态最简单的方法是在计算属性中返回某个状态
 
-    // const list = computed(() => store.getters.getColumns);
-    // const list = [{}];
-    // const biggerColumnLen = computed(() => store.getters.biggerColumnLen);
+    const list = computed(() => store.getters['columns/getColumns']);
+    const biggerColumnLen = computed(() => store.getters['columns/biggerColumnLen']);
     const { loadMorePage, isLastPage } = useLoadMore('columns/getColumnsAction', total, {
       pageSize: 6,
       currentPage: currentPage.value ? currentPage.value + 1 : 2
     });
 
     return {
-      // biggerColumnLen,
-      // list,
+      biggerColumnLen,
+      list,
       loadMorePage,
       isLastPage
     };

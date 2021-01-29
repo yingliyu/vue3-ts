@@ -7,6 +7,9 @@ import app from './modules/app';
 import { GlobalDataProps } from '@/stores/type';
 
 export const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
+  const testd = await axios.get(url);
+  console.log(testd);
+
   const { data } = await axios.get(url);
   commit(mutationName, data);
   return data;
@@ -30,7 +33,7 @@ export const asyncAndCommit = async (
   return data;
 };
 
-const store = createStore<GlobalDataProps>({
+const store = createStore({
   modules: {
     app,
     user,

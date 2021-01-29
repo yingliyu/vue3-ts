@@ -68,7 +68,7 @@ export default defineComponent({
     const md = new MarkdownIt();
     const modalIsVisible = ref();
     onMounted(() => {
-      dispatch('getPostDetailAction', pid);
+      dispatch('posts/getPostDetailAction', pid);
     });
     const postDetail = computed<PostProps>(() => getters.getCurrentPost(pid));
     const currentContentHtml = computed(() => {
@@ -88,7 +88,7 @@ export default defineComponent({
     });
     const hideAndDelete = () => {
       modalIsVisible.value = false;
-      store.dispatch('deletePostAction', pid).then((rawData: ResponseType<PostProps>) => {
+      store.dispatch('posts/deletePostAction', pid).then((rawData: ResponseType<PostProps>) => {
         createMessage('删除成功！2s后跳转至专栏首页', 'success');
         setTimeout(() => {
           router.push({ name: 'column', params: { id: rawData.data.cid } });

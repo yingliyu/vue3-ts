@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { asyncAndCommit, getAndCommit } from '../index';
 import { GetterTree, ActionTree, MutationTree } from 'vuex';
 import { arrToObj, objToArr } from '../../utils/helper';
+import { asyncAndCommit, getAndCommit } from '../index';
 import { PostState as State, GlobalDataProps } from '../type';
 const postsData = {
   '11': {
@@ -124,11 +124,10 @@ const mutations: MutationTree<State> = {
   }
 };
 
-const store = {
+export default {
   namespaced: true,
   state,
   getters,
   actions,
   mutations
 };
-export default store;

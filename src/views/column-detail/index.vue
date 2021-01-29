@@ -23,26 +23,27 @@ export default defineComponent({
   name: 'index',
   props: {},
   components: { Post },
-  computed: {
-    ...mapGetters('columns', { columnDetail: 'getColumnById' })
-  },
-  mounted() {
-    const route = useRoute();
-    const currentColumnId = route.params.id;
-    this.columnDetail(currentColumnId);
-  },
+  // computed: {
+  //   ...mapGetters('columns', { columnDetail: 'getColumnById' })
+  // },
+  // mounted() {
+  // const route = useRoute();
+  // const currentColumnId = route.params.id;
+  // this.columnDetail(currentColumnId);
+  // },
   setup() {
     const route = useRoute();
     const currentColumnId = route.params.id;
-    const { dispatch, state } = useStore<GlobalDataProps>();
+    const { dispatch, state, getters } = useStore<GlobalDataProps>();
     onMounted(() => {
       dispatch('columns/getColumnByIdAction', currentColumnId);
       dispatch('posts/getPostsByCidAction', currentColumnId);
     });
-    // const columnDetail = computed(() => getters.getColumnById(currentColumnId));
+    const columnDetail = computed(() => getters['columns/getColumnById'](currentColumnId));
     const postList = computed(() => state.posts.data);
+    console.log('columnDetail====', columnDetail);
 
-    return { route, postList };
+    return { columnDetail, route, postList };
   }
 });
 </script>
