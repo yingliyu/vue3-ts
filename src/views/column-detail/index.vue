@@ -21,7 +21,6 @@ import Post from '../../components/post-list/index.vue';
 import { GlobalDataProps } from '@/stores/type';
 export default defineComponent({
   name: 'index',
-  props: {},
   components: { Post },
   // computed: {
   //   ...mapGetters('columns', { columnDetail: 'getColumnById' })
@@ -34,13 +33,13 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const currentColumnId = route.params.id;
-    const { dispatch, state, getters } = useStore<GlobalDataProps>();
+    const { dispatch, getters } = useStore<GlobalDataProps>();
     onMounted(() => {
-      dispatch('columns/getColumnByIdAction', currentColumnId, { root: true });
-      dispatch('posts/getPostsByCidAction', currentColumnId, { root: true });
+      dispatch('columns/getColumnByIdAction', currentColumnId);
+      dispatch('posts/getPostsByCidAction', currentColumnId);
     });
     const columnDetail = computed(() => getters['columns/getColumnById'](currentColumnId));
-    const postList = computed(() => state.posts.data);
+    const postList = computed(() => getters['posts/getPostsByCid'](currentColumnId));
 
     return { columnDetail, route, postList };
   }

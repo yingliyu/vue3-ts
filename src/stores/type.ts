@@ -27,12 +27,14 @@ export interface PostProps {
 }
 export interface UserProps {
   isLogin?: boolean;
-  name?: string;
-  id?: string;
-  columnId?: string;
-  email?: string;
-  avatar?: ImageProps;
-  description?: string;
+  userInfo: {
+    name?: string;
+    id?: string;
+    columnId?: string;
+    email?: string;
+    avatar?: ImageProps;
+    description?: string;
+  };
   token?: string;
 }
 
@@ -56,18 +58,17 @@ export interface PostState {
 
 export interface GlobalDataProps {
   user: UserProps;
-  // token: string;
   columns: ColumnsState;
   posts: PostState;
   app: AppState;
 }
-
+export interface BreadcrumbItem {
+  title: string;
+  path: string;
+  show?: boolean;
+}
 export interface AppState {
   error: GlobalErrorProps;
   loading: boolean;
+  breadcrumb?: Array<BreadcrumbItem>;
 }
-// export interface UserState {
-//   isLogin: boolean;
-//   user: UserProps;
-//   token: string;
-// }

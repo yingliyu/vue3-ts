@@ -53,32 +53,33 @@ import MarkdownIt from 'markdown-it';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import store from '../../stores/index';
-import { PostProps, ResponseType } from '../../stores/type';
+import { PostProps, ResponseType, GlobalDataProps } from '../../stores/type';
 import Modal from '@/components/modal.vue';
 import createMessage from '@/components/create-message';
 export default defineComponent({
   name: 'PostDetail',
-  props: {},
   components: { Modal },
   setup() {
-    const { getters, state, dispatch } = useStore();
+    const { getters, state, dispatch } = useStore<GlobalDataProps>();
     const route = useRoute();
     const router = useRouter();
     const pid = route.params.id;
     const md = new MarkdownIt();
     const modalIsVisible = ref();
+
     onMounted(() => {
-      dispatch('posts/getPostDetailAction', pid, { root: true });
+      dispatch('posts/getPostDetailAction', pid);
     });
-    const postDetail = computed<PostProps>(() => getters.getCurrentPost(pid));
+    const postDetail = computed(() => getters['posts/getCurrentPost'](pid));
+
     const currentContentHtml = computed(() => {
       if (postDetail.value && postDetail.value.content) {
         return md.render(postDetail.value.content);
       }
     });
-    const userInfo = computed(() => state.user);
+    const userInfo = computed(() => state.user.userInfo);
     const showEditArea = computed(() => {
-      const { isLogin, id } = state.user;
+      const { isLogin } = state.user;
       return isLogin;
       // if (postDetail.value && postDetail.value.author && isLogin) {
       //   return postDetail.value.author.id === id;

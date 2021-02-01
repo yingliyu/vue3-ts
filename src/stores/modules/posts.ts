@@ -17,7 +17,9 @@ const postsData = {
     createdTime: '1978-10-30 07:36:47',
     cid: '1',
     author: {
-      id: '1129fC3A-cF13-A2c9-Ff8A-6c7a843Cbbfd'
+      userInfo: {
+        id: '1129fC3A-cF13-A2c9-Ff8A-6c7a843Cbbfd'
+      }
     }
   },
   '12': {
@@ -32,7 +34,9 @@ const postsData = {
     createdTime: '2003-10-14 19:47:35',
     cid: '1',
     author: {
-      id: 'DbE21fB1-52d6-BBcd-3FF3-1cD71f325fDa'
+      userInfo: {
+        id: '1229fC3A-cF13-A2c9-Ff8A-6c7a843Cbbfd'
+      }
     }
   },
   '13': {
@@ -47,7 +51,9 @@ const postsData = {
     createdTime: '1994-03-23 13:56:10',
     cid: '1',
     author: {
-      id: '2C2cbD85-8E39-Cd52-6A8a-1fE3b4f1B4fF'
+      userInfo: {
+        id: '1329fC3A-cF13-A2c9-Ff8A-6c7a843Cbbfd'
+      }
     }
   }
 };

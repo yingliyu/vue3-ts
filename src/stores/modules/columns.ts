@@ -127,14 +127,17 @@ const mutations: MutationTree<State> = {
   fetchColumns(state, rawData) {
     const { data } = state;
     const { list, total, currentPage } = rawData.data;
-    state = {
-      data: { ...data, ...arrToObj(list) }, // 添加非覆盖
-      total: total,
-      currentPage: currentPage * 1
-    };
+    state.data = { ...data, ...arrToObj(list) }; // 添加非覆盖
+    state.total = total;
+    state.currentPage = currentPage * 1;
+    // state = {
+    //   data: { ...data, ...arrToObj(list) }, // 添加非覆盖
+    //   total: total,
+    //   currentPage: currentPage * 1
+    // };
   },
   fetchColumnById(state, { data }) {
-    state.data[data._id] = data;
+    state.data[data.id] = data;
   }
 };
 

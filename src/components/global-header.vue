@@ -12,14 +12,16 @@
         </li>
       </ul>
       <div v-else class="dropdown">
-        <dropdown :title="`Hello,${user.name}`">
+        <dropdown :title="`Hello,${user.userInfo.name}`">
           <dropdown-item
             ><router-link class="dropdown-item" to="/post/create"
               >新建文章</router-link
             ></dropdown-item
           >
           <dropdown-item disabled><a class="dropdown-item" href="#">编辑资料</a></dropdown-item>
-          <dropdown-item><a class="dropdown-item" href="#">退出</a></dropdown-item>
+          <dropdown-item
+            ><a class="dropdown-item" href="#" @click="logoutHandle">退出</a></dropdown-item
+          >
         </dropdown>
       </div>
     </div>
@@ -30,6 +32,9 @@ import { defineComponent, onMounted, PropType } from 'vue';
 import Dropdown from './dropdown.vue';
 import DropdownItem from './dropdown-item.vue';
 import { UserProps } from '../stores/type';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import createMessage from '@/components/create-message/index';
 
 export default defineComponent({
   name: 'GlobalHeader',
@@ -41,9 +46,23 @@ export default defineComponent({
   },
   components: { Dropdown, DropdownItem },
   setup() {
+    const { commit } = useStore();
+    const router = useRouter();
     onMounted(() => {
       // console.log(props.user.name);
     });
+    const logoutHandle = () => {
+      commit('user/logout');
+      createMessage(`退出成功，2s后跳转到登陆页`, 'success', 2000);
+      setTimeout(() => {
+        router.push({
+          name: 'login'
+        });
+      }, 2000);
+    };
+    return {
+      logoutHandle
+    };
   }
 });
 </script>

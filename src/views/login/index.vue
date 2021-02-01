@@ -1,6 +1,6 @@
 <template>
   <div class="index-wrapper">
-    <h2 class="pt-3">登陆</h2>
+    <h2 class="pt-3">者也专栏登陆</h2>
     <!-- 登陆表单 start -->
     <validate-form @form-submit="onFormSubmit" class="pt-3">
       <div class="mb-3">

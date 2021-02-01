@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/home/index.vue';
-import Login from '../views/login/index.vue';
-// import Column from '../views/column/index.vue';
-import ColumnDetail from '../views/column-detail/index.vue';
-import PostDetail from '../views/post-detail/index.vue';
-import PostCreate from '../views/create-post/index.vue';
-import Sign from '../views/signin/index.vue';
+const Home = () => import(/* webpackChunkName: "home" */ '../views/home/index.vue');
+const Login = () => import(/* webpackChunkName: "login" */ '../views/login/index.vue');
+const ColumnDetail = () =>
+  import(/* webpackChunkName: "column" */ '../views/column-detail/index.vue');
+const PostDetail = () => import(/* webpackChunkName: "post" */ '../views/post-detail/index.vue');
+const PostCreate = () => import(/* webpackChunkName: "post" */ '../views/create-post/index.vue');
+const Sign = () => import('../views/signin/index.vue');
 import store from '@/stores/index';
 import axios from 'axios';
 
@@ -13,6 +13,10 @@ const routerHistory = createWebHistory();
 
 const router = createRouter({
   history: routerHistory,
+  scrollBehavior(to, from, savedPosition) {
+    // always scroll to top
+    return { top: 0 };
+  },
   routes: [
     {
       path: '/',
@@ -20,7 +24,10 @@ const router = createRouter({
       component: Home,
       // 路由元信息
       meta: {
-        requiredLogin: false
+        title: '首页',
+        showNav: true,
+        showBreadcrumb: false,
+        requiresAuth: false
       }
     },
     {
@@ -28,7 +35,10 @@ const router = createRouter({
       name: 'login',
       component: Login,
       meta: {
-        redirectAlreadyLogin: true
+        showNav: false,
+        showBreadcrumb: false,
+        redirectAlreadyLogin: true,
+        requiresAuth: false
       }
     },
     {
@@ -36,23 +46,21 @@ const router = createRouter({
       name: 'sign',
       component: Sign,
       meta: {
-        redirectAlreadyLogin: true
+        showNav: false,
+        showBreadcrumb: false,
+        redirectAlreadyLogin: true,
+        requiresAuth: false
       }
     },
-    // {
-    //   path: '/column',
-    //   name: 'column',
-    //   component: Column,
-    //   meta: {
-    //     requiredLogin: false
-    //   }
-    // },
     {
       path: '/column/:id',
       name: 'column',
       component: ColumnDetail,
       meta: {
-        requiredLogin: false
+        title: '栏目',
+        showNav: true,
+        showBreadcrumb: true,
+        requiresAuth: false
       }
     },
     {
@@ -60,7 +68,10 @@ const router = createRouter({
       name: 'createPost',
       component: PostCreate,
       meta: {
-        requiredLogin: true
+        title: '发表文章',
+        showNav: true,
+        showBreadcrumb: true,
+        requiresAuth: true
       }
     },
     {
@@ -68,7 +79,10 @@ const router = createRouter({
       name: 'postDetail',
       component: PostDetail,
       meta: {
-        requiredLogin: false
+        title: '文章详情',
+        showNav: true,
+        showBreadcrumb: true,
+        requiresAuth: false
       }
     }
   ]
@@ -80,7 +94,7 @@ router.beforeEach((to, from, next) => {
   // 权限管理 —— 未登陆就重定向至登陆页
   const { isLogin, token } = store.state.user;
 
-  const { requiredLogin, redirectAlreadyLogin } = to.meta;
+  const { requiresAuth, redirectAlreadyLogin } = to.meta;
   if (!isLogin) {
     if (token) {
       axios.defaults.headers.common.authorization = token;
@@ -95,11 +109,11 @@ router.beforeEach((to, from, next) => {
         })
         .catch((e) => {
           console.log(e);
-          localStorage.removeItem('token');
+          store.commit('user/logout');
           next('/login');
         });
     } else {
-      if (requiredLogin) {
+      if (requiresAuth) {
         next('/login');
       } else {
         next();
@@ -113,12 +127,17 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  if (to.meta.requiredLogin && to.name !== 'login' && !isLogin) {
+  if (to.meta.requiresAuth && to.name !== 'login' && !isLogin) {
     next({ name: 'login' });
   } else if (to.meta.redirect && isLogin) {
     next({ name: '/' });
   } else {
     next();
   }
+  // store.commit('app/setBreadcrumb', {
+  //   title: to.meta.title,
+  //   path: to.path,
+  //   show: to.meta.showBreadcrumb
+  // });
 });
 export default router;
