@@ -31,7 +31,7 @@
 import { defineComponent, onMounted, PropType } from 'vue';
 import Dropdown from './dropdown.vue';
 import DropdownItem from './dropdown-item.vue';
-import { UserProps } from '../stores/type';
+import { UserProps } from '../store/type';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import createMessage from '@/components/create-message/index';

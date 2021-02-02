@@ -52,8 +52,8 @@ import { computed, defineComponent, onMounted, ref } from 'vue';
 import MarkdownIt from 'markdown-it';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
-import store from '../../stores/index';
-import { PostProps, ResponseType, GlobalDataProps } from '../../stores/type';
+import store from '../../store/index';
+import { PostProps, ResponseType, GlobalDataProps } from '../../store/type';
 import Modal from '@/components/modal.vue';
 import createMessage from '@/components/create-message';
 export default defineComponent({

@@ -21,7 +21,7 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
-import { ColumnProps } from '@/stores/type';
+import { ColumnProps } from '@/store/type';
 export default defineComponent({
   name: 'ColumnItem',
   props: {

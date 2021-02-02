@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex';
-import { GlobalErrorProps, AppState as State } from '@/stores/type';
+import { GlobalErrorProps, AppState as State } from '@/store/type';
 import * as MutationsTypes from './mutations-type';
 const mutations: MutationTree<State> = {
   [MutationsTypes.SET_LOADING](state, status) {

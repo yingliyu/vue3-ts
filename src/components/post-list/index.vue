@@ -27,7 +27,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { PostProps } from '../../stores/type';
+import { PostProps } from '../../store/type';
 export default defineComponent({
   name: 'PostList',
   props: {

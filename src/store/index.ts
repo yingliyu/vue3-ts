@@ -4,7 +4,7 @@ import app from './modules/app';
 import user from './modules/user';
 import columns from './modules/columns';
 import posts from './modules/posts';
-import { GlobalDataProps } from '@/stores/type';
+import { GlobalDataProps } from '@/store/type';
 
 export const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await axios.get(url);

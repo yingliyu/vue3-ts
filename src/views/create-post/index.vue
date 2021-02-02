@@ -54,7 +54,7 @@ import { defineComponent, onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import Uploader from '@/components/uploader/index.vue';
-import { ImageProps, ResponseType, PostProps, GlobalDataProps } from '@/stores/type';
+import { ImageProps, ResponseType, PostProps, GlobalDataProps } from '@/store/type';
 import ValidateForm from '@/components/validate-form.vue';
 import ValidateInput from '@/components/validate-input.vue';
 import createMessage from '@/components/create-message/index';

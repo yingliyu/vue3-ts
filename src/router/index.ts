@@ -6,7 +6,7 @@ const ColumnDetail = () =>
 const PostDetail = () => import(/* webpackChunkName: "post" */ '../views/post-detail/index.vue');
 const PostCreate = () => import(/* webpackChunkName: "post" */ '../views/create-post/index.vue');
 const Sign = () => import('../views/signin/index.vue');
-import store from '@/stores/index';
+import store from '@/store/index';
 import axios from 'axios';
 
 const routerHistory = createWebHistory();

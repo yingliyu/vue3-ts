@@ -1,4 +1,4 @@
-import { AppState as State } from '@/stores/type';
+import { AppState as State } from '@/store/type';
 const state: State = {
   error: {
     code: 200
