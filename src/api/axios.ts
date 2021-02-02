@@ -127,7 +127,7 @@ service.interceptors.response.use(
 
     if (error?.response?.status === 401) {
       if (router.currentRoute.value.path !== '/entry/login') {
-        createMessage('登录凭证已过期，请重新登录');
+        createMessage('登录凭证已过期，请重新登录', 'error');
         router.push('/entry/login');
       }
       return Promise.reject(new Error('401'));
